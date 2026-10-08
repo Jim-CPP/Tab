@@ -1,6 +1,6 @@
-// Template.cpp
+// Tab.cpp
 
-#include "Template.h"
+#include "Tab.h"
 
 int ShowAboutMessage( HWND hWndOwner )
 {
@@ -46,10 +46,10 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			// Get font
 			hFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
 
-			// Create list box window
-			if( ListBoxWindowCreate( hWndMain, hInstance, hFont ) )
+			// Create tab control window
+			if( TabControlWindowCreate( hWndMain, hInstance, hFont ) )
 			{
-				// Successfully created list box window
+				// Successfully created tab control window
 
 				// Create status bar window
 				if( StatusBarWindowCreate( hWndMain, hInstance, hFont ) )
@@ -58,7 +58,7 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 
 				} // End of successfully created status bar window
 
-			} // End of successfully created list box window
+			} // End of successfully created tab control window
 
 			// Break out of switch
 			break;
@@ -70,7 +70,7 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			int nClientWidth;
 			int nClientHeight;
 			int nStatusBarWindowHeight;
-			int nListBoxWindowHeight;
+			int nTabControlWindowHeight;
 
 			// Store client size
 			nClientWidth	= LOWORD( lParam );
@@ -79,11 +79,11 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			// Size status bar window
 			nStatusBarWindowHeight = StatusBarWindowSize();
 
-			// Calculate list box window height
-			nListBoxWindowHeight = ( nClientHeight - nStatusBarWindowHeight );
+			// Calculate tab control window height
+			nTabControlWindowHeight = ( nClientHeight - nStatusBarWindowHeight );
 
-			// Move list box window
-			ListBoxWindowMove( 0, 0, nClientWidth, nListBoxWindowHeight );
+			// Move tab control window
+			TabControlWindowMove( 0, 0, nClientWidth, nTabControlWindowHeight );
 
 			// Break out of switch
 			break;
@@ -124,23 +124,8 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 				{
 					// Default command
 
-					// See if command message is from list box window
-					if( IsListBoxWindow( ( HWND )lParam ) )
-					{
-						// Command message is from list box window
-
-						// Handle command message from list box window
-						lResult = ListBoxWindowHandleCommandMessage( hWndMain, wParam, lParam, &StatusBarWindowSetText );
-
-					} // End of command message is from list box window
-					else
-					{
-						// Command message is not from list box window
-
-						// Call default window procedure
-						lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
-
-					} // End of command message is not from list box window
+					// Call default window procedure
+					lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
 
 					// Break out of switch
 					break;
@@ -278,23 +263,16 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			// Add about item to system menu
 			InsertMenu( hMenuSystem, SYSTEM_MENU_ABOUT_ITEM_POSITION, MF_BYPOSITION, SYSTEM_MENU_ABOUT_ITEM_ID, SYSTEM_MENU_ABOUT_ITEM_TEXT );
 
-			// Allocate string memory
-			LPTSTR lpszStatusMessage = new char[ STRING_LENGTH + sizeof( char ) ];
-
 			// Show main window
 			ShowWindow( hWndMain, nCmdShow );
 
 			// Update main window
 			UpdateWindow( hWndMain );
 
-			// Populate list box window
-			nItemCount = ListBoxWindowPopulate();
-
-			// Format status message
-			wsprintf( lpszStatusMessage, LIST_BOX_WINDOW_POPULATE_STATUS_MESSAGE_FORMAT_STRING, nItemCount );
-
-			// Show status message on status bar window
-			StatusBarWindowSetText( lpszStatusMessage );
+			// Populate tab control window
+			TabControlWindowAddTab( "qwertyuiop" );
+			TabControlWindowAddTab( "asdfghjkl" );
+			TabControlWindowAddTab( "zxcvbnm" );
 
 			// Main message loop
 			while( GetMessage( &msg, NULL, 0, 0 ) > 0 )
@@ -306,9 +284,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 				DispatchMessage( &msg );
 
 			}; // End of main message loop
-
-			// Free string memory
-			delete [] lpszStatusMessage;
 
 		} // End of successfully created main window
 

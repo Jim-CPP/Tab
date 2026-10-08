@@ -7,10 +7,10 @@
 #include "Ascii.h"
 #include "Common.h"
 
-#include "ListBoxWindow.h"
+#include "TabControlWindow.h"
 #include "StatusBarWindow.h"
 
-#define MAIN_WINDOW_CLASS_NAME													"Main Template Window Class"
+#define MAIN_WINDOW_CLASS_NAME													"Main Tab Window Class"
 
 #define MAIN_WINDOW_CLASS_STYLE													0
 #define MAIN_WINDOW_CLASS_ICON_NAME												IDI_APPLICATION
@@ -21,7 +21,7 @@
 #define MAIN_WINDOW_CLASS_ICON_SMALL											LoadIcon( NULL, MAIN_WINDOW_CLASS_ICON_NAME )
 
 #define MAIN_WINDOW_EXTENDED_STYLE												WS_EX_CLIENTEDGE
-#define MAIN_WINDOW_TEXT														"Template"
+#define MAIN_WINDOW_TEXT														"Tab"
 #define MAIN_WINDOW_STYLE														WS_OVERLAPPEDWINDOW
 
 #define MAIN_WINDOW_MINIMUM_WIDTH												320
@@ -32,8 +32,8 @@
 #define SYSTEM_MENU_ABOUT_ITEM_ID												1001
 #define SYSTEM_MENU_ABOUT_ITEM_TEXT												"About"
 
-#define ABOUT_MESSAGE_TEXT														"Template\r\n"						\
+#define ABOUT_MESSAGE_TEXT														"Tab\r\n"							\
 																				"\r\n"								\
 																				"Written by Jim Smith\r\n"			\
 																				"\r\n"								\
-																				"August 2026"
+																				"October 2026"
