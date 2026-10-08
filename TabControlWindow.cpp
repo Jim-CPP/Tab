@@ -48,6 +48,51 @@ int TabControlWindowAddTab( LPCTSTR lpszTitle )
 
 } // End of function TabControlWindowAddTab
 
+BOOL TabControlWindowCallSelectFunction( BOOL( *lpSelectFunction )( int nWhichTab, LPCTSTR lpszTitle ) )
+{
+	BOOL bResult = FALSE;
+
+	int nWhichTab;
+
+	// Get selected tab
+	nWhichTab = SendMessage( g_hWndTabControl, TCM_GETCURSEL, ( WPARAM )NULL, ( LPARAM )NULL );
+
+	// Ensure that selected tab was got
+	if( nWhichTab >= 0 )
+	{
+		// Successfully got selected tab
+		TCITEM tcItem;
+
+		// Allocate string memory
+		LPTSTR lpszTitle = new char[ STRING_LENGTH + sizeof( char ) ];
+
+		// Clear tab control item structure
+		ZeroMemory( &tcItem, sizeof( tcItem ) );
+
+		// Initialise tab control item structure
+		tcItem.mask			= TCIF_TEXT;
+		tcItem.pszText		= lpszTitle;
+		tcItem.cchTextMax	= STRING_LENGTH;
+
+		// Get tab control item
+		if( SendMessage( g_hWndTabControl, TCM_GETITEM, ( WPARAM )nWhichTab, ( LPARAM )&tcItem ) )
+		{
+			// Successfully got tab control item
+
+			// Call select function
+			( *lpSelectFunction )( nWhichTab, lpszTitle );
+
+		} // End of successfully got tab control item
+
+		// Free string memory
+		delete [] lpszTitle;
+
+	} // End of successfully got selected tab
+
+	return bResult;
+
+} // End of function TabControlWindowCallSelectFunction
+
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 {
 	BOOL bResult = FALSE;
@@ -71,6 +116,42 @@ BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 	return bResult;
 
 } // End of function TabControlWindowCreate
+
+LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpSelectFunction )( int nWhichTab, LPCTSTR lpszTitle ) )
+{
+	LRESULT lResult = 0;
+
+	// Select tab control window notify message
+	switch( ( ( LPNMHDR )lParam )->code )
+	{
+		case TCN_SELCHANGE:
+		{
+			// A selection change tab control window notify message
+
+			// Call select function
+			TabControlWindowCallSelectFunction( lpSelectFunction );
+
+			// Break out of switch
+			break;
+
+		} // End of a selection change tab control window notify message
+		default:
+		{
+			// Default tab control window notify message
+
+			// Call default window procedure
+			lResult = DefWindowProc( hWndMain, WM_NOTIFY, wParam, lParam );
+
+			// Break out of switch
+			break;
+
+		} // End of default tab control window notify message
+
+	}; // End of selection for notify message
+
+	return lResult;
+
+} // End of function TabControlHandleNotifyMessage
 
 BOOL TabControlWindowMove( int nLeft, int nTop, int nWidth, int nHeight )
 {

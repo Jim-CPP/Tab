@@ -18,6 +18,10 @@ BOOL IsTabControlWindow( HWND hWndSupplied );
 
 int TabControlWindowAddTab( LPCTSTR lpszTitle );
 
+BOOL TabControlWindowCallSelectFunction( BOOL( *lpSelectFunction )( int nWhichTab, LPCTSTR lpszTitle ) );
+
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont );
+
+LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpSelectFunction )( int nWhichTab, LPCTSTR lpszTitle ) );
 
 BOOL TabControlWindowMove( int nLeft, int nTop, int nWidth, int nHeight );

@@ -2,6 +2,13 @@
 
 #include "Tab.h"
 
+BOOL TabControlWindowSelectFunction( int, LPCTSTR lpszTitle )
+{
+	// Show title on status bar window
+	return StatusBarWindowSetText( lpszTitle );
+
+} // End of function TabControlWindowSelectFunction
+
 int ShowAboutMessage( HWND hWndOwner )
 {
 	int nResult;
@@ -174,6 +181,32 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			break;
 
 		} // End of a system command message
+		case WM_NOTIFY:
+		{
+			// A notify message
+
+			// See if notify message is from a control window
+			if( IsTabControlWindow( ( ( LPNMHDR )lParam )->hwndFrom ) )
+			{
+				// Notify message is from tab control window
+
+				// Handle notify message from tab control window
+				lResult = TabControlWindowHandleNotifyMessage( hWndMain, wParam, lParam, &TabControlWindowSelectFunction );
+
+			} // End of notify message is from tac control window
+			else
+			{
+				// Notify message is not from a control window
+
+				// Call default window procedure
+				lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+
+			} // End of notify message is not from a control window
+
+			// Break out of switch
+			break;
+
+		} // End of a notify message
 		case WM_CLOSE:
 		{
 			// A close message
@@ -251,7 +284,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 		if( hWndMain )
 		{
 			// Successfully created main window
-			int nItemCount;
 			HMENU hMenuSystem;
 
 			// Get system menu
@@ -273,6 +305,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			TabControlWindowAddTab( "qwertyuiop" );
 			TabControlWindowAddTab( "asdfghjkl" );
 			TabControlWindowAddTab( "zxcvbnm" );
+
+			// Select initial tab
+			TabControlWindowCallSelectFunction( &TabControlWindowSelectFunction );
 
 			// Main message loop
 			while( GetMessage( &msg, NULL, 0, 0 ) > 0 )
