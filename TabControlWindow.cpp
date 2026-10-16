@@ -18,9 +18,13 @@ int TabControlWindowAddTab( LPCTSTR lpszTitle )
 	int nResult = -1;
 
 	HWND hWndControl;
+	HFONT hFont;
+
+	// Get font
+	hFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
 
 	// Create control window
-	hWndControl = CreateWindowEx( WS_EX_CLIENTEDGE, "listbox", "", WS_CHILD | LBS_NOINTEGRALHEIGHT, 20, 20, 150, 200, g_hWndTabControl, ( HMENU )NULL, NULL, NULL );
+	hWndControl = ControlWindowCreate( g_hWndTabControl, NULL, hFont );
 
 	// Ensure that control window was created
 	if( hWndControl )
@@ -28,7 +32,6 @@ int TabControlWindowAddTab( LPCTSTR lpszTitle )
 		// Successfully created control window
 		TAB_CONTROL_WINDOW_DATA tcwData;
 		int nItemCount;
-		HFONT hFont;
 
 		// Clear tab control window data structure
 		ZeroMemory( &tcwData, sizeof( tcwData ) );
@@ -38,13 +41,9 @@ int TabControlWindowAddTab( LPCTSTR lpszTitle )
 		tcwData.tcItemHeader.cchTextMax	= STRING_LENGTH;
 		tcwData.tcItemHeader.pszText	= ( LPTSTR )lpszTitle;
 		tcwData.hWndControl				= hWndControl;
-		wsprintf( tcwData.cData, "Data for tab %s.", lpszTitle );
 
-		// Get font
-		hFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
-
-		// Set control window font
-		SendMessage( tcwData.hWndControl, WM_SETFONT, ( WPARAM )hFont, ( LPARAM )TRUE );
+		// Format tab control window data string
+		wsprintf( tcwData.cData, TAB_CONTROL_WINDOW_DATA_FORMAT_STRING, lpszTitle );
 
 		// Add text to control window
 		SendMessage( tcwData.hWndControl, LB_ADDSTRING, ( WPARAM )NULL, ( LPARAM )lpszTitle );
@@ -255,7 +254,7 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 				// Selected control window is valid
 
 				// Hide selected control window
-				ShowWindow( g_hWndSelectedControl, SW_HIDE );
+				ControlWindowHide( g_hWndSelectedControl );
 
 			} // End of selected control window is valid
 
@@ -266,7 +265,7 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 			TabControlWindowUpdate();
 
 			// Show selected control window
-			ShowWindow( g_hWndSelectedControl, SW_SHOWNORMAL );
+			ControlWindowShow( g_hWndSelectedControl );
 
 			// Update return value
 			bResult = TRUE;
@@ -310,7 +309,7 @@ BOOL TabControlWindowUpdate()
 		nControlWindowHeight	= ( rc.bottom - rc.top );
 
 		// Move selected control window
-		if( SetWindowPos( g_hWndSelectedControl, NULL, rc.left, rc.top, nControlWindowWidth, nControlWindowHeight, SWP_NOACTIVATE ) )
+		if( ControlWindowMove( g_hWndSelectedControl, rc.left, rc.top, nControlWindowWidth, nControlWindowHeight ) )
 		{
 			// Successfully moved selected control window
 

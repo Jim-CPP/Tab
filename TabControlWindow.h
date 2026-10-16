@@ -8,11 +8,15 @@
 #include "Ascii.h"
 #include "Common.h"
 
+#include "ControlWindow.h"
+
 #define TAB_CONTROL_WINDOW_CLASS_NAME											WC_TABCONTROL
 
 #define TAB_CONTROL_WINDOW_EXTENDED_STYLE										0
 #define TAB_CONTROL_WINDOW_STYLE												( WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE )
 #define TAB_CONTROL_WINDOW_TEXT													NULL
+
+#define TAB_CONTROL_WINDOW_DATA_FORMAT_STRING									"Data for tab %s"
 
 typedef struct
 {
