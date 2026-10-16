@@ -100,6 +100,9 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 		{
 			// An activate message
 
+			// Focus on tab control window
+			TabControlWindowSetFocus();
+
 			// Break out of switch
 			break;
 
@@ -191,7 +194,7 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 				// Notify message is from tab control window
 
 				// Handle notify message from tab control window
-				lResult = TabControlWindowHandleNotifyMessage( hWndMain, wParam, lParam, &TabControlWindowSelectFunction );
+				lResult = TabControlWindowHandleNotifyMessage( hWndMain, wParam, lParam, &StatusBarWindowSetText );
 
 			} // End of notify message is from tac control window
 			else
@@ -307,7 +310,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			TabControlWindowAddTab( "zxcvbnm" );
 
 			// Select initial tab
-			TabControlWindowCallSelectFunction( &TabControlWindowSelectFunction );
+			TabControlWindowOnSelect( &StatusBarWindowSetText );
 
 			// Main message loop
 			while( GetMessage( &msg, NULL, 0, 0 ) > 0 )

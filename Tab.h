@@ -1,4 +1,4 @@
-// Template.h
+// Tab.h
 
 #pragma once
 

@@ -11,17 +11,36 @@
 #define TAB_CONTROL_WINDOW_CLASS_NAME											WC_TABCONTROL
 
 #define TAB_CONTROL_WINDOW_EXTENDED_STYLE										0
-#define TAB_CONTROL_WINDOW_STYLE												( WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS )
+#define TAB_CONTROL_WINDOW_STYLE												( WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE )
 #define TAB_CONTROL_WINDOW_TEXT													NULL
 
-BOOL IsTabControlWindow( HWND hWndSupplied );
+typedef struct
+{
+	TCITEMHEADER tcItemHeader;
 
-int TabControlWindowAddTab( LPCTSTR lpszTitle );
+	HWND hWndControl;
+	char cData[ STRING_LENGTH + sizeof( char ) ];
 
-BOOL TabControlWindowCallSelectFunction( BOOL( *lpSelectFunction )( int nWhichTab, LPCTSTR lpszTitle ) );
+} TAB_CONTROL_WINDOW_DATA;
+
+BOOL IsTabControlWindow( HWND hWnd );
+
+int TabControlWindowAddTab( LPCTSTR lpszItemText );
 
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont );
 
-LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpSelectFunction )( int nWhichTab, LPCTSTR lpszTitle ) );
+BOOL TabControlWindowGetItemText( int nWhichItem, LPTSTR lpszItemText );
 
-BOOL TabControlWindowMove( int nLeft, int nTop, int nWidth, int nHeight );
+int TabControlWindowGetSelectedItem();
+
+LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+
+BOOL TabControlWindowMove( int nX, int nY, int nWidth, int nHeight, BOOL bRepaint = TRUE );
+
+BOOL TabControlWindowOnItemSelected( int nWhichItem, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+
+BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+
+HWND TabControlWindowSetFocus();
+
+BOOL TabControlWindowUpdate();
