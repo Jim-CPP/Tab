@@ -39,9 +39,13 @@ int TabControlWindowGetSelectedItem();
 
 LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
 
+int TabControlWindowLoad( LPCTSTR lpszFileName );
+
 BOOL TabControlWindowMove( int nX, int nY, int nWidth, int nHeight, BOOL bRepaint = TRUE );
 
 BOOL TabControlWindowOnItemSelected( int nWhichItem, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+
+int TabControlWindowSave( LPCTSTR lpszFileName );
 
 BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
 

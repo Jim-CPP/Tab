@@ -305,9 +305,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			UpdateWindow( hWndMain );
 
 			// Populate tab control window
-			TabControlWindowAddTab( "qwertyuiop" );
-			TabControlWindowAddTab( "asdfghjkl" );
-			TabControlWindowAddTab( "zxcvbnm" );
+			TabControlWindowLoad( TABS_FILE_NAME );
 
 			// Select initial tab
 			TabControlWindowOnSelect( &StatusBarWindowSetText );

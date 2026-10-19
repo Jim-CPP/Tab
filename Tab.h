@@ -37,3 +37,5 @@
 																				"Written by Jim Smith\r\n"			\
 																				"\r\n"								\
 																				"October 2026"
+
+#define TABS_FILE_NAME															"Tabs.txt"

@@ -189,6 +189,86 @@ LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARA
 
 } // End of function TabControlWindowHandleNotifyMessage
 
+int TabControlWindowLoad( LPCTSTR lpszFileName )
+{
+	int nResult = 0;
+
+	HANDLE hFile;
+
+	// Open file
+	hFile = CreateFile( lpszFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
+
+	// Ensure that file was opened
+	if( hFile != INVALID_HANDLE_VALUE )
+	{
+		// Successfully opened file
+		DWORD dwFileSize;
+
+		// Get file size
+		dwFileSize = GetFileSize( hFile, NULL );
+
+		// Ensure that file size was got
+		if( dwFileSize != INVALID_FILE_SIZE )
+		{
+			// Successfully got file size
+
+			// Allocate string memory
+			LPTSTR lpszFileText = new char[ dwFileSize + sizeof( char ) ];
+
+			// Read file text
+			if( ReadFile( hFile, lpszFileText, dwFileSize, NULL, NULL ) )
+			{
+				// Successfully read file text
+				LPTSTR lpszTab;
+
+				// Terminate file text
+				lpszFileText[ dwFileSize ] = ( char )NULL;
+
+				// Get first tab
+				lpszTab = strtok( lpszFileText, NEW_LINE_TEXT );
+
+				// Loop through all tabs
+				while( lpszTab )
+				{
+					// Add tab
+					if( TabControlWindowAddTab( lpszTab ) >= 0 )
+					{
+						// Successfully added tab
+
+						// Update return value
+						nResult ++;
+
+						// Get next tab
+						lpszTab = strtok( NULL, NEW_LINE_TEXT );
+
+					} // End of successfully added tab
+					else
+					{
+						// Unable to add tab
+
+						// Force exit from loop
+						lpszTab = NULL;
+
+					} // End of unable to add tab
+
+				}; // End of loop through all tabs
+
+			} // End of successfully read file text
+
+			// Free string memory
+			delete [] lpszFileText;
+
+		} // End of successfully got file size
+
+		// Close file
+		CloseHandle( hFile );
+
+	} // End of successfully opened file
+
+	return nResult;
+
+} // End of function TabControlWindowLoad
+
 BOOL TabControlWindowMove( int nX, int nY, int nWidth, int nHeight, BOOL bRepaint )
 {
 	BOOL bResult = FALSE;
@@ -280,6 +360,14 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 	return bResult;
 
 } // End of function TabControlWindowOnSelect
+
+int TabControlWindowSave( LPCTSTR lpszFileName )
+{
+	BOOL bResult = FALSE;
+
+	return bResult;
+
+} // End of function TabControlWindowSave
 
 HWND TabControlWindowSetFocus()
 {
