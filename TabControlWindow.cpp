@@ -13,7 +13,7 @@ BOOL IsTabControlWindow( HWND hWnd )
 
 } // End of function IsTabControlWindow
 
-int TabControlWindowAddTab( LPCTSTR lpszTitle )
+int TabControlWindowAddTab( LPCTSTR lpszData )
 {
 	int nResult = -1;
 
@@ -33,20 +33,26 @@ int TabControlWindowAddTab( LPCTSTR lpszTitle )
 		TAB_CONTROL_WINDOW_DATA tcwData;
 		int nItemCount;
 
+		// Allocate string memory
+		LPTSTR lpszTitle = new char[ STRING_LENGTH + sizeof( char ) ];
+
+		// Format title
+		wsprintf( lpszTitle, "Tab: \"%s\"", lpszData );
+
 		// Clear tab control window data structure
 		ZeroMemory( &tcwData, sizeof( tcwData ) );
 
 		// Initialise tab control window data structure
 		tcwData.tcItemHeader.mask		= ( TCIF_TEXT | TCIF_PARAM );
 		tcwData.tcItemHeader.cchTextMax	= STRING_LENGTH;
-		tcwData.tcItemHeader.pszText	= ( LPTSTR )lpszTitle;
+		tcwData.tcItemHeader.pszText	= lpszTitle;
 		tcwData.hWndControl				= hWndControl;
 
-		// Format tab control window data string
-		wsprintf( tcwData.cData, TAB_CONTROL_WINDOW_DATA_FORMAT_STRING, lpszTitle );
+		// Update tab control window data string
+		lstrcpy( tcwData.cData, lpszData );
 
 		// Add text to control window
-		SendMessage( tcwData.hWndControl, LB_ADDSTRING, ( WPARAM )NULL, ( LPARAM )lpszTitle );
+		SendMessage( tcwData.hWndControl, LB_ADDSTRING, ( WPARAM )NULL, ( LPARAM )lpszData );
 
 		// Count items on tab
 		nItemCount = SendMessage( g_hWndTabControl, TCM_GETITEMCOUNT, ( WPARAM )NULL, ( LPARAM )NULL );
@@ -309,16 +315,11 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 		// Successfully got selected item
 		TAB_CONTROL_WINDOW_DATA tcwData;
 
-		// Allocate string memory
-		LPTSTR lpszItemText = new char[ STRING_LENGTH + sizeof( char ) ];
-
 		// Clear tab control window data structure
 		ZeroMemory( &tcwData, sizeof( tcwData ) );
 
 		// Initialise tab control window data structure
-		tcwData.tcItemHeader.mask		= ( TCIF_TEXT | TCIF_PARAM );
-		tcwData.tcItemHeader.cchTextMax	= STRING_LENGTH;
-		tcwData.tcItemHeader.pszText	= ( LPTSTR )lpszItemText;
+		tcwData.tcItemHeader.mask = TCIF_PARAM;
 
 		// Get tab control window data
 		if( SendMessage( g_hWndTabControl, TCM_GETITEM, ( WPARAM )nSelectedItem, ( LPARAM )( LPTCITEMHEADER )( &tcwData ) ) )
@@ -351,9 +352,6 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 			bResult = TRUE;
 
 		} // End of successfully got tab control window data
-
-		// Free string memory
-		delete [] lpszItemText;
 
 	} // End of successfully got selected item
 

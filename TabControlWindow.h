@@ -16,7 +16,7 @@
 #define TAB_CONTROL_WINDOW_STYLE												( WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE )
 #define TAB_CONTROL_WINDOW_TEXT													NULL
 
-#define TAB_CONTROL_WINDOW_DATA_FORMAT_STRING									"Data for tab %s"
+#define TAB_CONTROL_WINDOW_TITLE_FORMAT_STRING									"Tab: \"%s\""
 
 typedef struct
 {
