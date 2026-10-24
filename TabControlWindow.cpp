@@ -363,6 +363,89 @@ int TabControlWindowSave( LPCTSTR lpszFileName )
 {
 	BOOL bResult = FALSE;
 
+	HANDLE hFile;
+
+	// Create file
+	hFile = CreateFile( lpszFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+
+	// Ensure that file was created
+	if( hFile != INVALID_HANDLE_VALUE )
+	{
+		// Successfully created file
+		int nTabCount;
+		int nWhichTab;
+		DWORD dwDataLength;
+		DWORD dwNewLineTextLength;
+
+		// Update return value (assume success)
+		bResult = TRUE;
+
+		// Get new line text length
+		dwNewLineTextLength = lstrlen( NEW_LINE_TEXT );
+
+		// Count tabs
+		nTabCount = SendMessage( g_hWndTabControl, TCM_GETITEMCOUNT, ( WPARAM )NULL, ( LPARAM )NULL );
+
+		// Loop through all tabs
+		for( nWhichTab = 0; nWhichTab < nTabCount; nWhichTab ++ )
+		{
+			TAB_CONTROL_WINDOW_DATA tcwData;
+
+			// Clear tab control window data structure
+			ZeroMemory( &tcwData, sizeof( tcwData ) );
+
+			// Initialise tab control window data structure
+			tcwData.tcItemHeader.mask = TCIF_PARAM;
+
+			// Get tab control window data
+			if( SendMessage( g_hWndTabControl, TCM_GETITEM, ( WPARAM )nWhichTab, ( LPARAM )( LPTCITEMHEADER )( &tcwData ) ) )
+			{
+				// Successfully got tab control window data
+
+				// Get data length
+				dwDataLength = lstrlen( tcwData.cData );
+
+				// Write data to file
+				if( WriteFile( hFile, tcwData.cData, dwDataLength, NULL, NULL ) )
+				{
+					// Successfully wrote data to file
+
+					// Write new line text to file
+					WriteFile( hFile, NEW_LINE_TEXT, dwNewLineTextLength, NULL, NULL );
+
+				} // End of successfully wrote data to file
+				else
+				{
+					// Unable to write data to file
+
+					// Update return value
+					bResult = FALSE;
+
+					// Force exit from loop
+					nWhichTab = nTabCount;
+
+				} // End of unable to write data to file
+
+			} // End of successfully got tab control window data
+			else
+			{
+				// Unable to get tab control window data
+
+				// Update return value
+				bResult = FALSE;
+
+				// Force exit from loop
+				nWhichTab = nTabCount;
+
+			} // End of unable to get tab control window data
+
+		}; // End of loop through all tabs
+
+		// Close file
+		CloseHandle( hFile );
+
+	} // End of successfully created file
+
 	return bResult;
 
 } // End of function TabControlWindowSave

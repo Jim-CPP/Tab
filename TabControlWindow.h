@@ -18,6 +18,8 @@
 
 #define TAB_CONTROL_WINDOW_TITLE_FORMAT_STRING									"Tab: \"%s\""
 
+#define TAB_CONTROL_WINDOW_UNABLE_TO_SAVE_TABS_WARNING_MESSAGE					"Unable to save tabs\r\n\r\nAre you sure that you want to close?"
+
 typedef struct
 {
 	TCITEMHEADER tcItemHeader;
