@@ -52,7 +52,7 @@ int TabControlWindowAddTab( LPCTSTR lpszData )
 		lstrcpy( tcwData.cData, lpszData );
 
 		// Add text to control window
-		SendMessage( tcwData.hWndControl, LB_ADDSTRING, ( WPARAM )NULL, ( LPARAM )lpszData );
+		ControlWindowAddItem( tcwData.hWndControl, ( LPTSTR )lpszData );
 
 		// Count items on tab
 		nItemCount = SendMessage( g_hWndTabControl, TCM_GETITEMCOUNT, ( WPARAM )NULL, ( LPARAM )NULL );
