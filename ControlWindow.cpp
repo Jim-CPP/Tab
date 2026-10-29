@@ -117,11 +117,47 @@ BOOL ControlWindowMove( HWND hWndControl, int nLeft, int nTop, int nWidth, int n
 		// Auto-size all columns
 		ControlWindowAutoSizeAllColumns( hWndControl );
 
+		// Update return value
+		bResult = TRUE;
+
 	} // End of successfully moved control window
 
 	return bResult;
 
 } // End of function ControlWindowMove
+
+BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData )
+{
+	BOOL bResult = FALSE;
+
+	LVITEM lvItem;
+
+	// Delete all items on list view window
+	SendMessage( hWndControl, LVM_DELETEALLITEMS, ( WPARAM )NULL, ( LPARAM )NULL );
+
+	// Clear list view item structure
+	ZeroMemory( &lvItem, sizeof( lvItem ) );
+
+	// Initialise list view item structure
+	lvItem.mask			= LVIF_TEXT;
+	lvItem.cchTextMax	= STRING_LENGTH;
+	lvItem.iItem		= 0;
+	lvItem.iSubItem		= 0;
+	lvItem.pszText		= lpszData;
+
+	// Add item to list view window
+	if( SendMessage( hWndControl, LVM_INSERTITEM, ( WPARAM )0, ( LPARAM )&lvItem ) >= 0 )
+	{
+		// Successfully added item to list view window
+
+		// Update return value
+		bResult = TRUE;
+
+	} // End of successfully added item to list view window
+
+	return bResult;
+
+} // End of function ControlWindowPopulate
 
 BOOL ControlWindowShow( HWND hWndControl )
 {

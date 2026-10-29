@@ -29,6 +29,8 @@ BOOL ControlWindowHide( HWND hWndControl );
 
 BOOL ControlWindowMove( HWND hWndControl, int nLeft, int nTop, int nWidth, int nHeight );
 
+BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData );
+
 BOOL ControlWindowShow( HWND hWndControl );
 
 typedef enum

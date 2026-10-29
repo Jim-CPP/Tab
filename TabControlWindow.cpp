@@ -51,8 +51,8 @@ int TabControlWindowAddTab( LPCTSTR lpszData )
 		// Update tab control window data string
 		lstrcpy( tcwData.cData, lpszData );
 
-		// Add text to control window
-		ControlWindowAddItem( tcwData.hWndControl, ( LPTSTR )lpszData );
+		// Populate control window
+		ControlWindowPopulate( tcwData.hWndControl, ( LPTSTR )lpszData );
 
 		// Count items on tab
 		nItemCount = SendMessage( g_hWndTabControl, TCM_GETITEMCOUNT, ( WPARAM )NULL, ( LPARAM )NULL );
