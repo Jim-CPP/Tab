@@ -130,30 +130,112 @@ BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData )
 {
 	BOOL bResult = FALSE;
 
-	LVITEM lvItem;
+	WIN32_FIND_DATA wfd;
+	HANDLE hFind;
 
-	// Delete all items on list view window
-	SendMessage( hWndControl, LVM_DELETEALLITEMS, ( WPARAM )NULL, ( LPARAM )NULL );
+	// Allocate string memory
+	LPTSTR lpszParentFolderPath		= new char[ STRING_LENGTH + sizeof( char ) ];
+	LPTSTR lpszFullSearchPattern	= new char[ STRING_LENGTH + sizeof( char ) ];
 
-	// Clear list view item structure
-	ZeroMemory( &lvItem, sizeof( lvItem ) );
+	// Store parent folder path
+	lstrcpy( lpszParentFolderPath, lpszData );
 
-	// Initialise list view item structure
-	lvItem.mask			= LVIF_TEXT;
-	lvItem.cchTextMax	= STRING_LENGTH;
-	lvItem.iItem		= 0;
-	lvItem.iSubItem		= 0;
-	lvItem.pszText		= lpszData;
-
-	// Add item to list view window
-	if( SendMessage( hWndControl, LVM_INSERTITEM, ( WPARAM )0, ( LPARAM )&lvItem ) >= 0 )
+	// Ensure that parent folder path ends with a back-slash
+	if( lpszParentFolderPath[ lstrlen( lpszParentFolderPath ) - sizeof( char ) ] != ASCII_BACK_SLASH_CHARACTER )
 	{
-		// Successfully added item to list view window
+		// Parent folder path does not end with a back-slash
+
+		// Append a back-slash onto parent folder path
+		lstrcat( lpszParentFolderPath, ASCII_BACK_SLASH_STRING );
+
+	} // End of parent folder path does not end with a back-slash
+
+	// Copy parent folder path into full search pattern
+	lstrcpy( lpszFullSearchPattern, lpszParentFolderPath );
+
+	// Append all files filter onto full search pattern
+	lstrcat( lpszFullSearchPattern, ALL_FILES_FILTER );
+
+	// Find the first item
+	hFind = FindFirstFile( lpszFullSearchPattern, &wfd );
+
+	// Ensure that first item was found
+	if( hFind != INVALID_HANDLE_VALUE )
+	{
+		// Successfully found first item
+		LVITEM lvItem;
+		int nItem;
+
+		// Delete all items on list view window
+		SendMessage( hWndControl, LVM_DELETEALLITEMS, ( WPARAM )NULL, ( LPARAM )NULL );
+
+		// Clear list view item structure
+		ZeroMemory( &lvItem, sizeof( lvItem ) );
+
+		// Initialise list view item structure
+		lvItem.mask			= LVIF_TEXT;
+		lvItem.cchTextMax	= STRING_LENGTH;
+		lvItem.iItem		= 0;
+
+		// Loop through all found items
+		do
+		{
+			// See if found item is a folder
+			if( wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+			{
+				// Found item is a folder
+
+				// Ensure that found item is not dots
+				if( wfd.cFileName[ 0 ] != ASCII_FULL_STOP_CHARACTER )
+				{
+					// Found item is not dots
+
+					// Update list view item structure for found item
+					lvItem.iSubItem	= 0;
+					lvItem.pszText	= wfd.cFileName;
+
+					// Add item to list view window
+					nItem = SendMessage( hWndControl, LVM_INSERTITEM, ( WPARAM )0, ( LPARAM )&lvItem );
+
+					// Ensure that item was added to list view window
+					if( nItem >= 0 )
+					{
+						// Successfully added item was added to list view window
+
+					} // End of successfully added item was added to list view window
+
+				} // End of found item is not dots
+
+			} // End of found item is a folder
+			else
+			{
+				// Found item is a file
+
+				// Update list view item structure for found item
+				lvItem.iSubItem	= 0;
+				lvItem.pszText	= wfd.cFileName;
+
+				// Add item to list view window
+				nItem = SendMessage( hWndControl, LVM_INSERTITEM, ( WPARAM )0, ( LPARAM )&lvItem );
+
+				// Ensure that item was added to list view window
+				if( nItem >= 0 )
+				{
+					// Successfully added item was added to list view window
+
+				} // End of successfully added item was added to list view window
+
+			} // End of found item is a file
+
+		} while( FindNextFile( hFind, &wfd ) != 0 ); // End of loop through all found items
 
 		// Update return value
 		bResult = TRUE;
 
-	} // End of successfully added item to list view window
+		// Close file find
+		FindClose( hFind );
+
+	} // End of successfully found first item
 
 	return bResult;
 
