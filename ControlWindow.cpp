@@ -126,7 +126,7 @@ BOOL ControlWindowMove( HWND hWndControl, int nLeft, int nTop, int nWidth, int n
 
 } // End of function ControlWindowMove
 
-BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData )
+BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData, LPTSTR lpszStatusMessage )
 {
 	BOOL bResult = FALSE;
 
@@ -165,6 +165,8 @@ BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData )
 		// Successfully found first item
 		LVITEM lvItem;
 		int nItem;
+		int nFileCount		= 0;
+		int nFolderCount	= 0;
 
 		// Delete all items on list view window
 		SendMessage( hWndControl, LVM_DELETEALLITEMS, ( WPARAM )NULL, ( LPARAM )NULL );
@@ -202,6 +204,9 @@ BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData )
 					{
 						// Successfully added item was added to list view window
 
+						// Update folder count
+						nFolderCount ++;
+
 					} // End of successfully added item was added to list view window
 
 				} // End of found item is not dots
@@ -223,11 +228,19 @@ BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData )
 				{
 					// Successfully added item was added to list view window
 
+					// Update file count
+					nFileCount ++;
+
 				} // End of successfully added item was added to list view window
 
 			} // End of found item is a file
 
 		} while( FindNextFile( hFind, &wfd ) != 0 ); // End of loop through all found items
+
+		// Format status message
+		wsprintf( lpszStatusMessage, CONTROL_WINDOW_POPULATE_STATUS_MESSAGE_FORMAT_STRING, lpszParentFolderPath, nFileCount, nFolderCount );
+
+		// Don't isplay status message here, that will be done when the tab is selected
 
 		// Update return value
 		bResult = TRUE;
@@ -236,6 +249,10 @@ BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData )
 		FindClose( hFind );
 
 	} // End of successfully found first item
+
+	// Free string memory
+	delete [] lpszParentFolderPath;
+	delete [] lpszFullSearchPattern;
 
 	return bResult;
 

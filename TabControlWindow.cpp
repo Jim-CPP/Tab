@@ -37,7 +37,7 @@ int TabControlWindowAddTab( LPCTSTR lpszData )
 		LPTSTR lpszTitle = new char[ STRING_LENGTH + sizeof( char ) ];
 
 		// Format title
-		wsprintf( lpszTitle, "Tab: \"%s\"", lpszData );
+		wsprintf( lpszTitle, TAB_CONTROL_WINDOW_TITLE_FORMAT_STRING, lpszData );
 
 		// Clear tab control window data structure
 		ZeroMemory( &tcwData, sizeof( tcwData ) );
@@ -52,7 +52,7 @@ int TabControlWindowAddTab( LPCTSTR lpszData )
 		lstrcpy( tcwData.cData, lpszData );
 
 		// Populate control window
-		ControlWindowPopulate( tcwData.hWndControl, ( LPTSTR )lpszData );
+		ControlWindowPopulate( tcwData.hWndControl, ( LPTSTR )lpszData, tcwData.cStatusMessage );
 
 		// Count items on tab
 		nItemCount = SendMessage( g_hWndTabControl, TCM_GETITEMCOUNT, ( WPARAM )NULL, ( LPARAM )NULL );
@@ -327,7 +327,7 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 			// Successfully got tab control window data
 
 			// Show item text on status bar window
-			( *lpStatusFunction )( tcwData.cData );
+			( *lpStatusFunction )( tcwData.cStatusMessage );
 
 			// See if selected control window is valid
 			if( g_hWndSelectedControl )

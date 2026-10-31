@@ -19,6 +19,8 @@
 
 #define CONTROL_WINDOW_COLUMN_NAMES												{ "Name" }
 
+#define CONTROL_WINDOW_POPULATE_STATUS_MESSAGE_FORMAT_STRING					"%s (%d files, %d folders)"
+
 int ControlWindowAddItem( HWND hWndControl, LPTSTR lpszItemText );
 
 int ControlWindowAutoSizeAllColumns( HWND hWndControl );
@@ -29,7 +31,7 @@ BOOL ControlWindowHide( HWND hWndControl );
 
 BOOL ControlWindowMove( HWND hWndControl, int nLeft, int nTop, int nWidth, int nHeight );
 
-BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData );
+BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData, LPTSTR lpszStatusMessage );
 
 BOOL ControlWindowShow( HWND hWndControl );
 

@@ -26,6 +26,7 @@ typedef struct
 
 	HWND hWndControl;
 	char cData[ STRING_LENGTH + sizeof( char ) ];
+	char cStatusMessage[ STRING_LENGTH + sizeof( char ) ];
 
 } TAB_CONTROL_WINDOW_DATA;
 
