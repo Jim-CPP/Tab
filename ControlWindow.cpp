@@ -316,7 +316,7 @@ BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData, LPTSTR lpszStatus
 		// Format status message
 		wsprintf( lpszStatusMessage, CONTROL_WINDOW_POPULATE_STATUS_MESSAGE_FORMAT_STRING, lpszParentFolderPath, nFileCount, nFolderCount );
 
-		// Don't isplay status message here, that will be done when the tab is selected
+		// Don't display status message here, that will be done when the tab is selected
 
 		// Update return value
 		bResult = TRUE;
@@ -333,6 +333,13 @@ BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData, LPTSTR lpszStatus
 	return bResult;
 
 } // End of function ControlWindowPopulate
+
+HWND ControlWindowSetFocus( HWND hWndControl )
+{
+	// Focus on control window
+	return SetFocus( hWndControl );
+
+} // End of function ControlWindowSetFocus
 
 BOOL ControlWindowShow( HWND hWndControl )
 {

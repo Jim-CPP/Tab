@@ -11,7 +11,7 @@
 #define CONTROL_WINDOW_CLASS_NAME												WC_LISTVIEW
 
 #define CONTROL_WINDOW_EXTENDED_STYLE											( WS_EX_CLIENTEDGE | LVS_EX_FULLROWSELECT )
-#define CONTROL_WINDOW_STYLE													( WS_CHILD | LVS_REPORT )
+#define CONTROL_WINDOW_STYLE													( WS_CHILD | LVS_REPORT | LVS_SHOWSELALWAYS )
 // Note that control window is not visible by default
 // It will be made visible when the tab is selected
 
@@ -34,6 +34,8 @@ BOOL ControlWindowHide( HWND hWndControl );
 BOOL ControlWindowMove( HWND hWndControl, int nLeft, int nTop, int nWidth, int nHeight );
 
 BOOL ControlWindowPopulate( HWND hWndControl, LPTSTR lpszData, LPTSTR lpszStatusMessage );
+
+HWND ControlWindowSetFocus( HWND hWndControl );
 
 BOOL ControlWindowShow( HWND hWndControl );
 

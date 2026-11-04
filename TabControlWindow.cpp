@@ -72,6 +72,11 @@ int TabControlWindowAddTab( LPCTSTR lpszData )
 
 } // End of function TabControlWindowAddTab
 
+BOOL TabControlWindowControlWindowStatusMessage( LPCTSTR lpszStatusMessage )
+{
+
+} // End of function TabControlWindowControlWindowStatusMessage
+
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 {
 	BOOL bResult = FALSE;
@@ -353,6 +358,9 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 
 			// Show active control window
 			ControlWindowShow( g_hWndActiveControl );
+
+			// Focus on active control window
+			ControlWindowSetFocus( g_hWndActiveControl );
 
 			// Update return value
 			bResult = TRUE;
