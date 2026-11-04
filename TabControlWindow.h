@@ -32,6 +32,8 @@ typedef struct
 
 BOOL IsTabControlWindow( HWND hWnd );
 
+HWND TabControlWindowActiveControlWindow();
+
 int TabControlWindowAddTab( LPCTSTR lpszItemText );
 
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont );

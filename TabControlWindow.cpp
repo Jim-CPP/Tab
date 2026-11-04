@@ -4,7 +4,7 @@
 
 // Global variables
 static HWND g_hWndTabControl;
-static HWND g_hWndSelectedControl;
+static HWND g_hWndActiveControl;
 
 BOOL IsTabControlWindow( HWND hWnd )
 {
@@ -13,6 +13,12 @@ BOOL IsTabControlWindow( HWND hWnd )
 
 } // End of function IsTabControlWindow
 
+HWND TabControlWindowActiveControlWindow()
+{
+	// Get active control window
+	return g_hWndActiveControl;
+
+} // End of function IsTabControlWindow
 int TabControlWindowAddTab( LPCTSTR lpszData )
 {
 	int nResult = -1;
@@ -90,8 +96,8 @@ BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 			// Set tab control window font
 			SendMessage( g_hWndTabControl, WM_SETFONT, ( WPARAM )hFont, ( LPARAM )TRUE );
 
-			// Clear selected control window
-			g_hWndSelectedControl = NULL;
+			// Clear active control window
+			g_hWndActiveControl = NULL;
 
 			// Update return value
 			bResult = TRUE;
@@ -329,24 +335,24 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 			// Show item text on status bar window
 			( *lpStatusFunction )( tcwData.cStatusMessage );
 
-			// See if selected control window is valid
-			if( g_hWndSelectedControl )
+			// See if active control window is valid
+			if( g_hWndActiveControl )
 			{
 				// Selected control window is valid
 
-				// Hide selected control window
-				ControlWindowHide( g_hWndSelectedControl );
+				// Hide active control window
+				ControlWindowHide( g_hWndActiveControl );
 
-			} // End of selected control window is valid
+			} // End of active control window is valid
 
-			// Update selected control window
-			g_hWndSelectedControl = tcwData.hWndControl;
+			// Update active control window
+			g_hWndActiveControl = tcwData.hWndControl;
 
 			// Update tab control window (to resize control windows)
 			TabControlWindowUpdate();
 
-			// Show selected control window
-			ControlWindowShow( g_hWndSelectedControl );
+			// Show active control window
+			ControlWindowShow( g_hWndActiveControl );
 
 			// Update return value
 			bResult = TRUE;
@@ -477,15 +483,15 @@ BOOL TabControlWindowUpdate()
 		nControlWindowWidth		= ( rc.right - rc.left );
 		nControlWindowHeight	= ( rc.bottom - rc.top );
 
-		// Move selected control window
-		if( ControlWindowMove( g_hWndSelectedControl, rc.left, rc.top, nControlWindowWidth, nControlWindowHeight ) )
+		// Move active control window
+		if( ControlWindowMove( g_hWndActiveControl, rc.left, rc.top, nControlWindowWidth, nControlWindowHeight ) )
 		{
-			// Successfully moved selected control window
+			// Successfully moved active control window
 
 			// Update return value
 			bResult = TRUE;
 
-		} // End of successfully moved selected control window
+		} // End of successfully moved active control window
 
 	} // End of successfully got tab control window client size
 

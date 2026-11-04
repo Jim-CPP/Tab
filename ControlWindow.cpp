@@ -98,6 +98,82 @@ HWND ControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 
 } // End of function ControlWindowCreate
 
+LRESULT  ControlWindowHandleNotifyMessage( HWND hWndControl, HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) )
+{
+	LRESULT lResult = 0;
+
+	LPNMHDR lpNmhdr;
+
+	// Get notify message handler
+	lpNmhdr = ( ( LPNMHDR )lParam );
+
+	// Select control window notification code
+	switch( lpNmhdr->code )
+	{
+		case LVN_ITEMCHANGED:
+		{
+			// An item changed notification code
+			LPNMLISTVIEW lpNmListView;
+
+			// Get list view notification information
+			lpNmListView = ( LPNMLISTVIEW )lParam;
+
+			// See if item has changed to selected
+			if( ( lpNmListView->uNewState ^ lpNmListView->uOldState ) & LVIS_SELECTED )
+			{
+				// Item has changed to selected
+				LVITEM lvItem;
+
+				// Allocate string memory
+				LPTSTR lpszItemText = new char[ STRING_LENGTH + sizeof( char ) ];
+
+				// Clear list view item structure
+				ZeroMemory( &lvItem, sizeof( lvItem ) );
+
+				// Initialise list view item structure
+				lvItem.mask			= LVIF_TEXT;
+				lvItem.iSubItem		= CONTROL_WINDOW_NAME_COLUMN;
+				lvItem.pszText		= lpszItemText;
+				lvItem.cchTextMax	= STRING_LENGTH;
+				lvItem.iItem		= lpNmListView->iItem;
+
+				// Get item text
+				if( SendMessage( hWndControl, LVM_GETITEMTEXT, ( WPARAM )lvItem.iItem, ( LPARAM )&lvItem ) )
+				{
+					// Successfully got item text
+
+					// Call status function with item text
+					( *lpStatusFunction )( lpszItemText );
+
+				} // End of successfully got item text
+
+				// Free string memory
+				delete [] lpszItemText;
+
+			} // Item has changed to selected
+
+			// Break out of switch
+			break;
+
+		}// End of an item changed notification code
+		default:
+		{
+			// Default notification code
+
+			// Call default window procedure
+			lResult = DefWindowProc( hWndMain, WM_NOTIFY, wParam, lParam );
+
+			// Break out of switch
+			break;
+
+		} // End of default notification code
+
+	}; // End of selection for control window notification code
+
+	return lResult;
+
+} // End of function ControlWindowHandleNotifyMessage
+
 BOOL ControlWindowHide( HWND hWndControl )
 {
 	// Hide control window

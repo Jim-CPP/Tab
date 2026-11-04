@@ -27,6 +27,8 @@ int ControlWindowAutoSizeAllColumns( HWND hWndControl );
 
 HWND ControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont );
 
+LRESULT  ControlWindowHandleNotifyMessage( HWND hWndControl, HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+
 BOOL ControlWindowHide( HWND hWndControl );
 
 BOOL ControlWindowMove( HWND hWndControl, int nLeft, int nTop, int nWidth, int nHeight );

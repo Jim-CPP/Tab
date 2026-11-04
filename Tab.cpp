@@ -188,7 +188,7 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 		{
 			// A notify message
 
-			// See if notify message is from a control window
+			// See if notify message is from tab control window
 			if( IsTabControlWindow( ( ( LPNMHDR )lParam )->hwndFrom ) )
 			{
 				// Notify message is from tab control window
@@ -196,15 +196,34 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 				// Handle notify message from tab control window
 				lResult = TabControlWindowHandleNotifyMessage( hWndMain, wParam, lParam, &StatusBarWindowSetText );
 
-			} // End of notify message is from tac control window
+			} // End of notify message is from tab control window
 			else
 			{
-				// Notify message is not from a control window
+				// Notify message is not from tab control window
+				HWND hWndActiveControl;
 
-				// Call default window procedure
-				lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+				// Get active control window
+				hWndActiveControl = TabControlWindowActiveControlWindow();
 
-			} // End of notify message is not from a control window
+				// See if notify message is from active control window
+				if( hWndActiveControl == ( ( ( LPNMHDR )lParam )->hwndFrom ) )
+				{
+					// Notify message is from active control window
+
+					// Handle control message from active control window
+					lResult = ControlWindowHandleNotifyMessage( hWndActiveControl, hWndMain, wParam, lParam, &StatusBarWindowSetText );
+
+				} // End of notify message is from active control window
+				else
+				{
+					// Notify message is not from active control window
+
+					// Call default window procedure
+					lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+
+				} // End of notify message is not from active control window
+
+			} // End of notify message is not from tab control window
 
 			// Break out of switch
 			break;
