@@ -36,13 +36,13 @@ HWND TabControlWindowActiveControlWindow();
 
 int TabControlWindowAddTab( LPCTSTR lpszItemText );
 
-BOOL TabControlWindowControlWindowStatusMessage( LPCTSTR lpszStatusMessage );
-
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont );
 
 BOOL TabControlWindowGetItemText( int nWhichItem, LPTSTR lpszItemText );
 
 int TabControlWindowGetSelectedItem();
+
+LRESULT TabControlWindowHandleControlWindowNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
 
 LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
 

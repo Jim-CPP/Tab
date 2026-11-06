@@ -211,7 +211,7 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 					// Notify message is from active control window
 
 					// Handle control message from active control window
-					lResult = ControlWindowHandleNotifyMessage( hWndActiveControl, hWndMain, wParam, lParam, &StatusBarWindowSetText );
+					lResult = TabControlWindowHandleControlWindowNotifyMessage( hWndMain, wParam, lParam, &StatusBarWindowSetText );
 
 				} // End of notify message is from active control window
 				else

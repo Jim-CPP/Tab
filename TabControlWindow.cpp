@@ -72,11 +72,6 @@ int TabControlWindowAddTab( LPCTSTR lpszData )
 
 } // End of function TabControlWindowAddTab
 
-BOOL TabControlWindowControlWindowStatusMessage( LPCTSTR lpszStatusMessage )
-{
-
-} // End of function TabControlWindowControlWindowStatusMessage
-
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 {
 	BOOL bResult = FALSE;
@@ -156,6 +151,36 @@ int TabControlWindowGetSelectedItem()
 	return SendMessage( g_hWndTabControl, TCM_GETCURSEL, ( WPARAM )NULL, ( LPARAM )NULL );
 
 } // End of function TabControlWindowGetSelectedItem
+
+LRESULT TabControlWindowHandleControlWindowNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) )
+{
+	LRESULT lResult = 0;
+
+	TAB_CONTROL_WINDOW_DATA tcwData;
+	int nSelectedItem;
+
+	// Get selected item
+	nSelectedItem = SendMessage( g_hWndTabControl, TCM_GETCURSEL, ( WPARAM )NULL, ( LPARAM )NULL );
+
+	// Clear tab control window data structure
+	ZeroMemory( &tcwData, sizeof( tcwData ) );
+
+	// Initialise tab control window data structure
+	tcwData.tcItemHeader.mask = TCIF_PARAM;
+
+	// Get tab control window data
+	if( SendMessage( g_hWndTabControl, TCM_GETITEM, ( WPARAM )nSelectedItem, ( LPARAM )( LPTCITEMHEADER )( &tcwData ) ) )
+	{
+		// Successfully got tab control window data
+
+		// Call control window function
+		lResult = ControlWindowHandleNotifyMessage( g_hWndActiveControl, hWndMain, wParam, lParam, lpStatusFunction, tcwData.cData );
+
+	} // End of successfully got tab control window data
+
+	return lResult;
+
+} // End of function TabControlWindowHandleControlWindowNotifyMessage
 
 LRESULT TabControlWindowHandleNotifyMessage( HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) )
 {

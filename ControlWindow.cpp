@@ -98,7 +98,7 @@ HWND ControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 
 } // End of function ControlWindowCreate
 
-LRESULT  ControlWindowHandleNotifyMessage( HWND hWndControl, HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) )
+LRESULT ControlWindowHandleNotifyMessage( HWND hWndControl, HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ), LPCTSTR lpszParentFolderPath )
 {
 	LRESULT lResult = 0;
 
@@ -113,44 +113,42 @@ LRESULT  ControlWindowHandleNotifyMessage( HWND hWndControl, HWND hWndMain, WPAR
 		case LVN_ITEMCHANGED:
 		{
 			// An item changed notification code
-			LPNMLISTVIEW lpNmListView;
+			int nSelectedItemCount;
 
-			// Get list view notification information
-			lpNmListView = ( LPNMLISTVIEW )lParam;
+			// Allocate string memory
+			LPTSTR lpszStatusMessage = new char[ STRING_LENGTH + sizeof( char ) ];
 
-			// See if item has changed to selected
-			if( ( lpNmListView->uNewState ^ lpNmListView->uOldState ) & LVIS_SELECTED )
+			// Count selected items
+			nSelectedItemCount = SendMessage( hWndControl, LVM_GETSELECTEDCOUNT, ( WPARAM )NULL, ( LPARAM )NULL );
+
+			// See how many items are selected
+			if( nSelectedItemCount == 0 )
 			{
-				// Item has changed to selected
-				LVITEM lvItem;
+				// No items are selected
 
-				// Allocate string memory
-				LPTSTR lpszItemText = new char[ STRING_LENGTH + sizeof( char ) ];
+				// Format status message
+				wsprintf( lpszStatusMessage, CONTROL_WINDOW_NO_ITEMS_SELECTED_STATUS_MESSAGE_FORMAT_STRING, lpszParentFolderPath );
 
-				// Clear list view item structure
-				ZeroMemory( &lvItem, sizeof( lvItem ) );
+			} // End of no items are selected
+			else if ( nSelectedItemCount == 1 )
+			{
+				// One item is selected
 
-				// Initialise list view item structure
-				lvItem.mask			= LVIF_TEXT;
-				lvItem.iSubItem		= CONTROL_WINDOW_NAME_COLUMN;
-				lvItem.pszText		= lpszItemText;
-				lvItem.cchTextMax	= STRING_LENGTH;
-				lvItem.iItem		= lpNmListView->iItem;
+				// Format status message
+				wsprintf( lpszStatusMessage, CONTROL_WINDOW_ONE_ITEM_SELECTED_STATUS_MESSAGE_FORMAT_STRING, lpszParentFolderPath, nSelectedItemCount );
 
-				// Get item text
-				if( SendMessage( hWndControl, LVM_GETITEMTEXT, ( WPARAM )lvItem.iItem, ( LPARAM )&lvItem ) )
-				{
-					// Successfully got item text
+			} // End of one item is selected
+			else
+			{
+				// Multiple items are selected
 
-					// Call status function with item text
-					( *lpStatusFunction )( lpszItemText );
+				// Format status message
+				wsprintf( lpszStatusMessage, CONTROL_WINDOW_MULTIPLE_ITEMS_SELECTED_STATUS_MESSAGE_FORMAT_STRING, lpszParentFolderPath, nSelectedItemCount );
 
-				} // End of successfully got item text
+			} // End of multiple items are selected
 
-				// Free string memory
-				delete [] lpszItemText;
-
-			} // Item has changed to selected
+			// Call status function with status message
+			( *lpStatusFunction )( lpszStatusMessage );
 
 			// Break out of switch
 			break;

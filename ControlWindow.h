@@ -21,13 +21,17 @@
 
 #define CONTROL_WINDOW_POPULATE_STATUS_MESSAGE_FORMAT_STRING					"%s (%d files, %d folders)"
 
+#define CONTROL_WINDOW_NO_ITEMS_SELECTED_STATUS_MESSAGE_FORMAT_STRING			"%s"
+#define CONTROL_WINDOW_ONE_ITEM_SELECTED_STATUS_MESSAGE_FORMAT_STRING			"%s (%d item selected)"
+#define CONTROL_WINDOW_MULTIPLE_ITEMS_SELECTED_STATUS_MESSAGE_FORMAT_STRING		"%s (%d items selected)"
+
 int ControlWindowAddItem( HWND hWndControl, LPTSTR lpszItemText );
 
 int ControlWindowAutoSizeAllColumns( HWND hWndControl );
 
 HWND ControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont );
 
-LRESULT  ControlWindowHandleNotifyMessage( HWND hWndControl, HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+LRESULT ControlWindowHandleNotifyMessage( HWND hWndControl, HWND hWndMain, WPARAM wParam, LPARAM lParam, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ), LPCTSTR lpszParentFolderPath );
 
 BOOL ControlWindowHide( HWND hWndControl );
 
