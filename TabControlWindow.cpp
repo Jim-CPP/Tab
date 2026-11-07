@@ -72,6 +72,42 @@ int TabControlWindowAddTab( LPCTSTR lpszData )
 
 } // End of function TabControlWindowAddTab
 
+BOOL TabControlWindowCloseTab( int nWhichTab, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) )
+{
+	BOOL bResult = FALSE;
+
+	// Close tab
+	if( SendMessage( g_hWndTabControl, TCM_DELETEITEM, ( WPARAM )nWhichTab, ( LPARAM )NULL ) )
+	{
+		// Successfully closed tab
+
+		// See if closed tab was the first tab
+		if( nWhichTab == 0 )
+		{
+			// Closed tab was the first tab
+
+			// Select first tab
+			SendMessage( g_hWndTabControl, TCM_SETCURSEL, ( WPARAM )nWhichTab, ( LPARAM )NULL );
+
+		} // End of closed tab was the first tab
+		else
+		{
+			// Closed tab was not the first tab
+
+			// Select previous tab
+			SendMessage( g_hWndTabControl, TCM_SETCURSEL, ( WPARAM )( nWhichTab - 1 ), ( LPARAM )NULL );
+
+		} // End of closed tab was not the first tab
+
+		// Select item
+		TabControlWindowOnSelect( lpStatusFunction );
+
+	} // End of successfully closed tab
+
+	return bResult;
+
+} // End of function TabControlWindowCloseTab
+
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont )
 {
 	BOOL bResult = FALSE;
@@ -397,6 +433,24 @@ BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText )
 	return bResult;
 
 } // End of function TabControlWindowOnSelect
+
+BOOL TabControlWindowSelectTab( int nWhichTab, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) )
+{
+	BOOL bResult = FALSE;
+
+	// Select tab
+	if( SendMessage( g_hWndTabControl, TCM_SETCURSEL, ( WPARAM )nWhichTab, ( LPARAM )NULL ) >= 0 )
+	{
+		// Successfully selected tab
+
+		// Select item
+		bResult = TabControlWindowOnSelect( lpStatusFunction );
+
+	} // End of successfully selected tab
+
+	return bResult;
+
+} // End of function TabControlWindowSelectTab
 
 int TabControlWindowSave( LPCTSTR lpszFileName )
 {

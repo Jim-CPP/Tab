@@ -130,6 +130,88 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			// Select command
 			switch( LOWORD( wParam ) )
 			{
+				case IDM_TAB_NEW:
+				{
+					// A tab new command
+					int nTabPosition;
+
+					// Allocate string memory
+					LPTSTR lpszFolderPath = new char[ STRING_LENGTH + sizeof( char ) ];
+
+					// Get current folder
+					GetCurrentDirectory( STRING_LENGTH, lpszFolderPath );
+
+					// Create new tab
+					nTabPosition = TabControlWindowAddTab( lpszFolderPath );
+
+					// Ensure that new tab was created
+					if( nTabPosition >= 0 )
+					{
+						// Successfully created new tab
+
+						// Select new tab
+						TabControlWindowSelectTab( nTabPosition, &StatusBarWindowSetText );
+
+					} // End of successfully created new tab
+
+					// Free string memory
+					delete [] lpszFolderPath;
+
+					// Break out of switch
+					break;
+
+				} // End of a tab new command
+				case IDM_TAB_CLOSE:
+				{
+					// A tab close command
+					int nSelectedTab;
+
+					// Get selected tab
+					nSelectedTab = TabControlWindowGetSelectedItem();
+
+					// Ensure that selected tab was got
+					if( nSelectedTab >= 0 )
+					{
+						// Successfully got selected tab
+
+						// Close selected tab
+						if( TabControlWindowCloseTab( nSelectedTab, &StatusBarWindowSetText ) )
+						{
+							// Successfully closed selected tab
+
+							// Select current tab
+							TabControlWindowOnSelect( &StatusBarWindowSetText );
+
+						} // End of successfully closed selected tab
+
+					} // End of successfully got selected tab
+
+					// Break out of switch
+					break;
+
+				} // End of a tab close command
+				case IDM_FILE_EXIT:
+				{
+					// A file exit command
+
+					// Destroy window
+					DestroyWindow( hWndMain );
+
+					// Break out of switch
+					break;
+
+				} // End of a file exit command
+				case IDM_HELP_ABOUT:
+				{
+					// A help about command
+
+					// Show about message
+					ShowAboutMessage( hWndMain );
+
+					// Break out of switch
+					break;
+
+				} // End of a help about command
 				default:
 				{
 					// Default command

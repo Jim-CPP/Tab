@@ -2,4 +2,6 @@ cls
 
 del *.exe
 
-g++ -mwindows -m64 -static -Wall -Wextra Tab.cpp ControlWindow.cpp TabControlWindow.cpp StatusBarWindow.cpp -o Tab.exe
+windres Resource.rc -o Resource.o
+
+g++ -mwindows -m64 -static -Wall -Wextra Tab.cpp ControlWindow.cpp TabControlWindow.cpp StatusBarWindow.cpp Resource.o -o Tab.exe

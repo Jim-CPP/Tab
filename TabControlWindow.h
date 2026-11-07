@@ -36,6 +36,8 @@ HWND TabControlWindowActiveControlWindow();
 
 int TabControlWindowAddTab( LPCTSTR lpszItemText );
 
+BOOL TabControlWindowCloseTab( int nWhichTab, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+
 BOOL TabControlWindowCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont );
 
 BOOL TabControlWindowGetItemText( int nWhichItem, LPTSTR lpszItemText );
@@ -53,6 +55,8 @@ BOOL TabControlWindowMove( int nX, int nY, int nWidth, int nHeight, BOOL bRepain
 int TabControlWindowSave( LPCTSTR lpszFileName );
 
 BOOL TabControlWindowOnSelect( BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
+
+BOOL TabControlWindowSelectTab( int nWhichTab, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
 
 HWND TabControlWindowSetFocus();
 

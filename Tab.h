@@ -4,6 +4,8 @@
 
 #include <windows.h>
 
+#include "Resource.h"
+
 #include "Ascii.h"
 #include "Common.h"
 
@@ -17,7 +19,7 @@
 #define MAIN_WINDOW_CLASS_ICON													LoadIcon( NULL, MAIN_WINDOW_CLASS_ICON_NAME )
 #define MAIN_WINDOW_CLASS_CURSOR												LoadCursor( NULL, IDC_ARROW )
 #define MAIN_WINDOW_CLASS_BACKGROUND											( HBRUSH )( COLOR_WINDOW + 1 )
-#define MAIN_WINDOW_CLASS_MENU_NAME												NULL
+#define MAIN_WINDOW_CLASS_MENU_NAME												MAKEINTRESOURCE( IDR_MAIN_MENU )
 #define MAIN_WINDOW_CLASS_ICON_SMALL											LoadIcon( NULL, MAIN_WINDOW_CLASS_ICON_NAME )
 
 #define MAIN_WINDOW_EXTENDED_STYLE												WS_EX_CLIENTEDGE
@@ -36,6 +38,6 @@
 																				"\r\n"								\
 																				"Written by Jim Smith\r\n"			\
 																				"\r\n"								\
-																				"October 2026"
+																				"November 2026"
 
 #define TABS_FILE_NAME															"Tabs.txt"
