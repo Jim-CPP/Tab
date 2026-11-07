@@ -19,6 +19,31 @@ HWND TabControlWindowActiveControlWindow()
 	return g_hWndActiveControl;
 
 } // End of function IsTabControlWindow
+
+int TabControlWindowAddTab()
+{
+	int nResult = -1;
+
+	// Allocate string memory
+	LPTSTR lpszFolderPath = new char[ STRING_LENGTH + sizeof( char ) ];
+
+	// Get current folder path
+	if( GetCurrentDirectory( STRING_LENGTH, lpszFolderPath ) )
+	{
+		// Successfully got current folder path
+
+		// Add tab
+		nResult = TabControlWindowAddTab( lpszFolderPath );
+
+	} // End of successfully got current folder path
+
+	// Free string memory
+	delete [] lpszFolderPath;
+
+	return nResult;
+
+} // End of function TabControlWindowAddTab
+
 int TabControlWindowAddTab( LPCTSTR lpszData )
 {
 	int nResult = -1;

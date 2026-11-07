@@ -135,14 +135,8 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 					// A tab new command
 					int nTabPosition;
 
-					// Allocate string memory
-					LPTSTR lpszFolderPath = new char[ STRING_LENGTH + sizeof( char ) ];
-
-					// Get current folder
-					GetCurrentDirectory( STRING_LENGTH, lpszFolderPath );
-
 					// Create new tab
-					nTabPosition = TabControlWindowAddTab( lpszFolderPath );
+					nTabPosition = TabControlWindowAddTab();
 
 					// Ensure that new tab was created
 					if( nTabPosition >= 0 )
@@ -153,9 +147,6 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 						TabControlWindowSelectTab( nTabPosition, &StatusBarWindowSetText );
 
 					} // End of successfully created new tab
-
-					// Free string memory
-					delete [] lpszFolderPath;
 
 					// Break out of switch
 					break;
@@ -428,7 +419,14 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			UpdateWindow( hWndMain );
 
 			// Populate tab control window
-			TabControlWindowLoad( TABS_FILE_NAME );
+			if( TabControlWindowLoad( TABS_FILE_NAME ) == 0 )
+			{
+				// No tabs were loaded into tab control window
+
+				// Add tab to tab control window
+				TabControlWindowAddTab();
+
+			} // End of no tabs were loaded into tab control window
 
 			// Select initial tab
 			TabControlWindowOnSelect( &StatusBarWindowSetText );

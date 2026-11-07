@@ -34,6 +34,8 @@ BOOL IsTabControlWindow( HWND hWnd );
 
 HWND TabControlWindowActiveControlWindow();
 
+int TabControlWindowAddTab();
+
 int TabControlWindowAddTab( LPCTSTR lpszItemText );
 
 BOOL TabControlWindowCloseTab( int nWhichTab, BOOL( *lpStatusFunction )( LPCTSTR lpszItemText ) );
