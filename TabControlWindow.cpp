@@ -24,18 +24,62 @@ int TabControlWindowAddTab()
 {
 	int nResult = -1;
 
+	TAB_CONTROL_WINDOW_DATA tcwData;
+	int nSelectedItem;
+
 	// Allocate string memory
 	LPTSTR lpszFolderPath = new char[ STRING_LENGTH + sizeof( char ) ];
 
-	// Get current folder path
-	if( GetCurrentDirectory( STRING_LENGTH, lpszFolderPath ) )
+	// Get selected item
+	nSelectedItem = SendMessage( g_hWndTabControl, TCM_GETCURSEL, ( WPARAM )NULL, ( LPARAM )NULL );
+
+	// Ensure that selected item was got
+	if( nSelectedItem >= 0 )
 	{
-		// Successfully got current folder path
+		// Successfully got selected item
 
-		// Add tab
-		nResult = TabControlWindowAddTab( lpszFolderPath );
+		// Clear tab control window data structure
+		ZeroMemory( &tcwData, sizeof( tcwData ) );
 
-	} // End of successfully got current folder path
+		// Initialise tab control window data structure
+		tcwData.tcItemHeader.mask = TCIF_PARAM;
+
+		// Get tab control window data
+		if( SendMessage( g_hWndTabControl, TCM_GETITEM, ( WPARAM )nSelectedItem, ( LPARAM )( LPTCITEMHEADER )( &tcwData ) ) )
+		{
+			// Successfully got tab control window data
+
+			// Copy tab folder path into folder path
+			lstrcpy( lpszFolderPath, ( LPTSTR )( tcwData.cData ) );
+
+			// Browse for folder
+			if( BrowseForFolder( NULL, lpszFolderPath ) )
+			{
+				// Successfully browsed for folder
+
+				// Add tab
+				nResult = TabControlWindowAddTab( lpszFolderPath );
+
+			} // End of successfully browsed for folder
+
+		} // End of successfully got tab control window data
+
+	} // End of successfully got selected item
+	else
+	{
+		// Unable to get selected item
+
+		// Get current folder path
+		if( GetCurrentDirectory( STRING_LENGTH, lpszFolderPath ) )
+		{
+			// Successfully got current folder path
+
+			// Add tab
+			nResult = TabControlWindowAddTab( lpszFolderPath );
+
+		} // End of successfully got current folder path
+
+	} // End of unable to get selected item
 
 	// Free string memory
 	delete [] lpszFolderPath;

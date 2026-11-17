@@ -8,6 +8,7 @@
 #include "Ascii.h"
 #include "Common.h"
 
+#include "BrowseForFolder.h"
 #include "ControlWindow.h"
 
 #define TAB_CONTROL_WINDOW_CLASS_NAME											WC_TABCONTROL
